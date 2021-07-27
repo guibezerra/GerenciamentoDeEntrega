@@ -1,5 +1,10 @@
 package com.bullprogrammer.bullgerencia.controller;
 
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -8,16 +13,15 @@ import com.bullprogrammer.bullgerencia.model.ClienteModel;
 @RestController // indica que a classe é um componente spring capaz de tratar requisições HTTP
 public class ClienteController {
 
+	@PersistenceContext // injeta um EntityManager em manager
+	private EntityManager manager; //permite fazer as operações com as entidades (exclusão, inserção, alteração etc)
+	
+	
 	@GetMapping ("/clientes")
-	public ClienteModel[] listarClients() {
-		ClienteModel cliente1 = new ClienteModel(1,"Renato Gaucho", "renatoGaucho@flamengo.com","8496628922");
-		ClienteModel cliente2 = new ClienteModel(2,"Jorge Jesus", "JJ@flamengo.com","8481201951");
+	public List<ClienteModel> listarClientes() {
 		
-		ClienteModel[] clientes = new ClienteModel[2];
-		clientes[0] = cliente1;
-		clientes[1] = cliente2;
-		
-		return clientes;
+		return manager.createQuery("from ClienteModel", ClienteModel.class)
+				.getResultList();
 	} 
 	
 }
